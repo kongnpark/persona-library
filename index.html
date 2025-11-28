@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Persona Library</title>
+  <style>
+    :root {
+      /* --bg: #0f172a; (Removed unused variable) */
+      --card-bg: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(243, 247, 248, 0.12);
+      --text-main: #ebe7e5;
+      --text-muted: #fab45a;
+      --border-subtle: #1f2933;
+      --radius-lg: 16px;
+    }
+
+    /* Class for JS to hide elements (Replaces inline style.display) */
+    .is-hidden {
+      display: none !important;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 20px 40px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1, h2 {
+      margin: 0 0 16px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-top: 24px;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    p {
+      margin: 4px 0 16px;
+      color: var(--text-muted);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* TABLE VIEW */
+
+    .table-card {
+      margin-top: 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.9)
+      );
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+      color: #cbd5f5;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(31, 41, 55, 0.9);
+      transform: translateY(-1px);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .niche-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    /* DETAIL VIEW */
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: rgba(30, 41, 59, 0.98);
+    }
+
+    .persona-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.9)
+      );
+      padding: 18px;
+      margin-top: 8px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+    }
+
+    .persona-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .persona-name {
+      font-size: 1.05rem;
+      font-weight: 650;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .persona-name span.handle {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+    }
+
+    .persona-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 6px 0 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .meta-item {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+    }
+
+    .section-label {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #9ca3ff;
+      opacity: 0.95;
+    }
+
+    .section-box {
+      margin-top: 4px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .section-box ul {
+      padding-left: 18px;
+      margin: 4px 0 0;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 0.76rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: var(--text-muted);
+    }
+
+    .signature-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 20px 14px 28px;
+      }
+      th, td {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="list-view">
+      <h1>Persona Table</h1>
+      <p>Click on any persona name to open that persona’s full details.</p>
+
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Sex</th>
+              <th>Age</th>
+              <th>Country</th>
+              <th>Persona Niche</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-persona="persona1" tabindex="0" role="button">
+              <td><strong>1. Sophie Monet</strong></td>
+              <td>F</td>
+              <td>28</td>
+              <td>France</td>
+              <td><span class="niche-pill">Language Learner (K-Drama → TOPIK)</span></td>
+            </tr>
+            <tr data-persona="persona2" tabindex="0" role="button">
+              <td><strong>2. Emily Kim</strong></td>
+              <td>F</td>
+              <td>21</td>
+              <td>Korean-American</td>
+              <td><span class="niche-pill">Campus Life / Bilingual Study</span></td>
+            </tr>
+            <tr data-persona="persona3" tabindex="0" role="button">
+              <td><strong>3. Linh Nguyen</strong></td>
+              <td>F</td>
+              <td>20</td>
+              <td>Vietnam</td>
+              <td><span class="niche-pill">Workplace Korean / Career Prep</span></td>
+            </tr>
+            <tr data-persona="persona4" tabindex="0" role="button">
+              <td><strong>4. Lucía Álvarez</strong></td>
+              <td>F</td>
+              <td>20</td>
+              <td>Spain</td>
+              <td><span class="niche-pill">K-Pop Dance + Lyrics Learning</span></td>
+            </tr>
+            <tr data-persona="persona5" tabindex="0" role="button">
+              <td><strong>5. Haruka Yamazaki</strong></td>
+              <td>F</td>
+              <td>21</td>
+              <td>Japan</td>
+              <td><span class="niche-pill">Cute JP–KR Diary / Beginner Korean</span></td>
+            </tr>
+            <tr data-persona="persona6" tabindex="0" role="button">
+              <td><strong>6. Stasya Volkova</strong></td>
+              <td>F</td>
+              <td>23</td>
+              <td>Russia</td>
+              <td><span class="niche-pill">K-Beauty + Esthetician Korean</span></td>
+            </tr>
+            <tr data-persona="persona7" tabindex="0" role="button">
+              <td><strong>7. Amara Feldman</strong></td>
+              <td>F</td>
+              <td>26</td>
+              <td>German-American</td>
+              <td><span class="niche-pill">Traditional Crafts & Slow Living</span></td>
+            </tr>
+            <tr data-persona="persona8" tabindex="0" role="button">
+              <td><strong>8. Natalia “Nati” Silva</strong></td>
+              <td>F</td>
+              <td>22</td>
+              <td>Brazil</td>
+              <td><span class="niche-pill">Fitness</span></td>
+            </tr>
+            <tr data-persona="persona9" tabindex="0" role="button">
+              <td><strong>9. Jayden Brooks</strong></td>
+              <td>M</td>
+              <td>25</td>
+              <td>UK</td>
+              <td><span class="niche-pill">Seoul Nightlife & Entertainment</span></td>
+            </tr>
+            <tr data-persona="persona10" tabindex="0" role="button">
+              <td><strong>10. Ethan Park</strong></td>
+              <td>M</td>
+              <td>24</td>
+              <td>Korean-American</td>
+              <td><span class="niche-pill">Korean Tech & Gaming Life</span></td>
+            </tr>
+            <tr data-persona="persona11" tabindex="0" role="button">
+              <td><strong>11. Sara Lombardi</strong></td>
+              <td>F</td>
+              <td>29</td>
+              <td>Italy</td>
+              <td><span class="niche-pill">History, Heritage & Folklore</span></td>
+            </tr>
+            <tr data-persona="persona12" tabindex="0" role="button">
+              <td><strong>12. Daniel Reyes</strong></td>
+              <td>M</td>
+              <td>30</td>
+              <td>Korean-Filipino</td>
+              <td><span class="niche-pill">Foodie + Korean everyday meals</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="detail-view" class="is-hidden">
+      <button class="back-btn" id="back-btn" tabindex="0">
+        ← Back to persona table
+      </button>
+
+      <div class="persona-card persona-detail is-hidden" id="persona1">
+        <img src="images/sophie.png" class="persona-img" alt="Emily image" width="320"> 
+        <br>
+        <br> <br>
+        <div class="persona-header">
+          <div class="persona-name">
+             <span>1. Sophie Monet</span>
+            <span class="handle">@sophieinkorea</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 28</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: French</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          🇫🇷 → 🇰🇷 | Learning Korean with heart and discipline. Sharing real progress, soft moments, and study inspiration.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Sophie is a French learner in Seoul who began her Korean journey through K-dramas and now studies daily. She shares cozy study desks, emotional reflections, and honest struggles on the road to fluency. She aims for TOPIK and uses BooksOnKorea resources naturally in her posts.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Soft, emotional, introspective, aesthetic.<br />
+          <strong>Language Rules:</strong> English main, occasional simple Korean phrases.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Warm neutrals, cozy desk, sunlight, analog feeling.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Study routines</li>
+            <li>K-drama vocabulary</li>
+            <li>Notes &amp; study spreads</li>
+            <li>Personal reflections</li>
+            <li>Small daily joys</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Little wins matter."</li>
+            <li>"Learning slowly, but honestly."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Soft aesthetic hashtags; avoid heavy #KoreanStudy spam.</span>
+            <span class="chip"><strong>CTA Style:</strong> Very soft, almost poetic.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Aggressive CTAs like “buy now”, “promo”.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona2">
+
+         <img src="images/emily.png" class="persona-img" alt="Emily image" width="320">
+          <br><br>
+
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>2. Emily Kim</span>
+            <span class="handle">@emiemi05</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 21</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Korean-American</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Korean-American uni student in Seoul. Sharing bilingual campus life, study tips, and daily motivation.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Emily is practical, friendly, and energetic. She mixes English and Korean naturally, posts useful study hacks, and shares campus routines. She’s the “relatable student” persona people feel comfortable DM-ing.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Upbeat, helpful, slightly playful.<br />
+          <strong>Language Rules:</strong> English + natural Konglish.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Bright colors, notebooks, café study setups, campus corners.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Uni and campus life</li>
+            <li>Bilingual humor</li>
+            <li>Study hacks and routines</li>
+            <li>Motivational posts</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Let's get it!"</li>
+            <li>"Study sprint time!"</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Studygram + campus-focused hashtags.</span>
+            <span class="chip"><strong>CTA Style:</strong> Friendly “join me” energy.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Overly poetic or abstract language.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona3">
+          <img src="images/Linh.png" class="persona-img" alt="Linh image" width="320">
+          <br><br>
+
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>3. Linh Nguyen</span>
+            <span class="handle">@summer.linh</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 20</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Vietnamese</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Vietnam → Seoul | Learning Korean to work at a Korean company. Practical, warm, realistic study journey.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Linh focuses on workplace Korean, practical vocabulary, and international student life. She is grounded, warm, and steady in tone — like a helpful older sister guiding others through the same path she’s walking.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Warm, calm, reassuring.<br />
+          <strong>Language Rules:</strong> English main, occasional Korean, sometimes Vietnamese expressions.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Soft sunlight, work/study desks, calm and neat visuals.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Workplace and business Korean</li>
+            <li>Survival Korean</li>
+            <li>International student tips</li>
+            <li>Career-focused study reflections</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"One step at a time."</li>
+            <li>"We'll get there."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Minimal, slightly professional.</span>
+            <span class="chip"><strong>CTA Style:</strong> Soft and supportive.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Over-exaggerated emotional language.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona4">
+        <img src="images/lucia.png" class="persona-img" alt="Lucia image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>4. Lucía Álvarez</span>
+            <span class="handle">@dewdroplucia</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 20</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Spanish</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          K-pop dancer learning Korean. Movement gives rhythm, language gives meaning.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Lucía blends dance, emotion, and language. She is artistic and sees Korean through the lens of music, rhythm, and self-expression. Her content connects choreography, lyrics, and vocabulary, turning study into a kind of performance.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Poetic, expressive, artistic.<br />
+          <strong>Language Rules:</strong> English with soft poetic lines + occasional Korean expressions and lyrics.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Stage lights, mirrors, airy movement, soft pastels.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Dance practice and choreography</li>
+            <li>Lyrics vocabulary</li>
+            <li>Creative ways to study Korean</li>
+            <li>Emotional reflections tied to songs</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Words have rhythm."</li>
+            <li>"Let your Korean flow."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Dance + aesthetic, not too technical.</span>
+            <span class="chip"><strong>CTA Style:</strong> Gentle, inspirational.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Very business-like or dry academic phrasing.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona5">
+        <img src="images/haruka.png" class="persona-img" alt="Haruka image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>5. Haruka Yamazaki</span>
+            <span class="handle">@haruhi206</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 21</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Japanese</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Japanese learner in Seoul sharing sweet bilingual moments in Korean and Japanese.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Haruka is cute, soft, and polite. Her posts feel like a small diary — simple joys, daily Korean discoveries, and comparisons between Japanese and Korean. She speaks gently and keeps everything light and approachable.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Cute, polite, simple.<br />
+          <strong>Language Rules:</strong> English main + Japanese + simple Korean phrases, often side-by-side.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Soft pastels, stationery, neat and gentle color palette.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Daily Korean expressions</li>
+            <li>JP–KR language differences</li>
+            <li>Short diary-style posts</li>
+            <li>Cute everyday life in Seoul</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"今日の韓国語♡"</li>
+            <li>"A tiny step today."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Soft, kawaii-style tags, not too many.</span>
+            <span class="chip"><strong>CTA Style:</strong> Sweet and simple.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Long dense paragraphs or heavy academic tone.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona6">
+        <img src="images/stasya.png" class="persona-img" alt="Stasya image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>6. Stasya Volkova</span>
+            <span class="handle">@stasya_glow</span>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-item">Age: 23</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Russian</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Skincare student in Seoul. Calm, minimal, bilingual beauty + Korean vocabulary.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Stasya studies to become a spa / esthetic therapist. Her angle is unique: she treats skincare and language learning as processes of clarity, precision, and patience. Her feed feels like a spa room — minimal, quiet, and organized.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Calm, elegant, minimal.<br />
+          <strong>Language Rules:</strong> English + key Korean beauty and skincare terms.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Cool tones, clean backgrounds, spa-like visuals, glass and water textures.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Skincare education and routines</li>
+            <li>Korean beauty vocabulary</li>
+            <li>Wellness and balance reflections</li>
+            <li>Professional esthetician journey</li>
+          </ul>
+        </div>
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Clean, calm, clear."</li>
+            <li>"Your glow grows slowly."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Minimal, aesthetic, not spammy.</span>
+            <span class="chip"><strong>CTA Style:</strong> Very soft and gentle.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> Slang, chaotic or loud expressions.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona7">
+        <img src="images/amara.png" class="persona-img" alt="Amara image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>7. Amara Feldman</span>
+            <span class="handle">@amara.makes</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 26</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: German-American</span>
+          <span class="meta-item">Location: Jeonju</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Slow living in Korea 🇰🇷
+          Hanji, ceramics & tiny market moments ✨
+          Learning Korea through craft & community.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Amara is a gentle slow-living creator based in Jeonju. She documents traditional crafts like hanji paper, ceramics, herbal
+          dyes, and markets run by local artisans. Her content feels warm, earthy, and peaceful.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Soft, aesthetic, mindful, cozy.<br />
+          <strong>Language Rules:</strong> English + occasional Korean craft words.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Earthy tones, textures, hanok walls, handmade crafts.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Traditional crafts</li>
+            <li>Artisan workshops</li>
+            <li>Slow tourism</li>
+            <li>Markets & hanok culture</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Quiet moments matter."</li>
+            <li>"Hands tell stories."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> minimal aesthetic.</span>
+            <span class="chip"><strong>CTA Style:</strong> very soft.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> slang, chaotic phrases.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona8">
+        <img src="images/nati.png" class="persona-img" alt="Nati image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>8. Natalia “Nati” Silva</span>
+            <span class="handle">@nati.moves</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 22</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Brazilian</span>
+          <span class="meta-item">Location: Mapo-gu</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          my cardio 😆💙 & Seoul energy.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Nati is a trainer in Korea. She posts high-energy fitness routines inspired by idol training. Energetic, uplifting, lovable.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Energetic, fun, playful, motivational.<br />
+          <strong>Language Rules:</strong> English + Korean slang.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Streetwear, neon lights, dance studios.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Fitness routines</li>
+            <li>Life in Seoul</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Let's GO babe!"</li>
+            <li>"One more time — but cuter!"</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> Fitness.</span>
+            <span class="chip"><strong>CTA Style:</strong> high-energy.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> technical jargon.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona9">
+         <img src="images/jayden.png" class="persona-img" alt="Jayden image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>9. Jayden Brooks</span>
+            <span class="handle">@jaydeninseoul</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 25</span>
+          <span class="meta-item">Gender: M</span>
+          <span class="meta-item">Nationality: British</span>
+          <span class="meta-item">Location: Itaewon</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Seoul nights → stories worth telling.
+          Bars, beats & late-night streets 🌃
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Jayden explores bars, DJ sets, indie venues, PC Bangs, and late-night food spots. Urban and insider-y.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Urban, minimal, confident.<br />
+          <strong>Language Rules:</strong> English + short Korean words (불금).
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Neon, shadows, late-night streets.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Nightlife spots</li>
+            <li>Music venues</li>
+            <li>PC Bang culture</li>
+            <li>Night photography</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"Seoul after dark hits different."</li>
+            <li>"Some places don’t need captions."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> minimalist.</span>
+            <span class="chip"><strong>CTA Style:</strong> subtle and cool.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> party slang.</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="persona-card persona-detail is-hidden" id="persona10">
+        <img src="images/ethan.png" class="persona-img" alt="Ethan image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>10. Ethan Park</span>
+            <span class="handle">@ethanbytes</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 24</span>
+          <span class="meta-item">Gender: M</span>
+          <span class="meta-item">Nationality: Korean-American</span>
+          <span class="meta-item">Location: Gangnam</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Korea’s gaming universe, one cozy PC bang at a time 🎮✨
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Ethan reviews PC rooms, gadgets, and cozy gaming spaces. A soft geek vibe with warm humor.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Friendly, geeky, gentle.<br />
+          <strong>Language Rules:</strong> English + Korean gamer slang.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> RGB lighting, neat setups.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>PC Bang reviews</li>
+            <li>Gadget mini-reviews</li>
+            <li>Gaming snacks</li>
+            <li>Cozy gamer life</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"This setup is dangerously cozy."</li>
+            <li>"PC bang heaven unlocked."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> minimal tech.</span>
+            <span class="chip"><strong>CTA Style:</strong> soft suggestions.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> elitist tech terms.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card persona-detail is-hidden" id="persona11">
+        <img src="images/sara.png" class="persona-img" alt="Sara image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>11. Sara Lombardi</span>
+            <span class="handle">@sara.inheritage</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 29</span>
+          <span class="meta-item">Gender: F</span>
+          <span class="meta-item">Nationality: Italian</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Korean history told softly — palaces, myths & hidden stories 🌙
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Sara visits palaces, heritage sites, old towns, and tells quiet stories about Korean history in a poetic way.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Poetic, reflective, calm.<br />
+          <strong>Language Rules:</strong> English with Korean location names.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Foggy mornings, stone walls, soft lighting.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Heritage sites</li>
+            <li>Folklore stories</li>
+            <li>Architecture details</li>
+            <li>Quiet walks</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>"History whispers if you slow down."</li>
+            <li>"Every old wall remembers something."</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> minimal heritage.</span>
+            <span class="chip"><strong>CTA Style:</strong> soft suggestions.</span>
+            <span class="chip"><strong>Forbidden Words:</strong> academic tone.</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="persona-card persona-detail is-hidden" id="persona12">
+        <img src="images/daniel.png" class="persona-img" alt="Daniel image" width="320">
+          <br><br>
+        <div class="persona-header">
+          <div class="persona-name">
+            <span>12. Daniel Reyes</span>
+            <span class="handle">@daniel.food</span>
+          </div>
+        </div>
+
+        <div class="persona-meta">
+          <span class="meta-item">Age: 30</span>
+          <span class="meta-item">Gender: M</span>
+          <span class="meta-item">Nationality: Korean-Filipino</span>
+          <span class="meta-item">Location: Seoul</span>
+        </div>
+
+        <div class="section-label">Short Bio</div>
+        <div class="section-box">
+          Korean food lover 🍜
+          Soft boy energy + daily meal diaries.
+        </div>
+
+        <div class="section-label">Extended Description</div>
+        <div class="section-box">
+          Daniel is a gentle, warm-hearted foodie who documents the everyday flavors of life in Korea.
+Instead of restaurants only, he focuses on the real meals people actually eat.
+        </div>
+
+        <div class="section-label">Tone &amp; Language</div>
+        <div class="section-box">
+          <strong>Tone:</strong> Warm, soft, sensory, gentle, cozy.
+                                  Never loud or overly “food blogger-y.”<br />
+          <strong>Language Rules:</strong> English main + simple, common Korean food terms:
+김치찜, 제육, 반찬, 분식, 점심특선, 편의점, 간식.
+        </div>
+
+        <div class="section-label">Aesthetic &amp; Themes</div>
+        <div class="section-box">
+          <strong>Aesthetic Style:</strong> Warm neutrals
+Close-up shots of food
+Lunch trays, banchan bowls, cozy cafés
+Soft textures, gentle lighting, calm colors.<br />
+          <strong>Content Themes:</strong>
+          <ul>
+            <li>Everyday Korean meals</li>
+            <li>Banchan culture</li>
+            <li>Lunch diaries</li>
+            <li>Cozy cafés + desserts</li>
+          </ul>
+        </div>
+
+        <div class="section-label">Signature &amp; Rules</div>
+        <div class="section-box">
+          <strong>Signature Phrases:</strong>
+          <ul class="signature-list">
+            <li>“Good food makes everything softer.”</li>
+            <li>“Food is a quiet kind of love.”</li>
+          </ul>
+          <div class="chips">
+            <span class="chip"><strong>Hashtag Style:</strong> minimal, warm, food-focused.</span>
+            <span class="chip"><strong>CTA Style:</strong> soft, reflective.</span>
+            <span class="chip"><strong>Forbidden Words:</strong>Aggressive foodie hype</span>
+          </div>
+        </div>
+      </div>
+
+
+    </div></div><script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listView = document.getElementById('list-view');
+      const detailView = document.getElementById('detail-view');
+      const backBtn = document.getElementById('back-btn');
+      const personaRows = document.querySelectorAll('tr[data-persona]');
+      const allDetailCards = document.querySelectorAll('.persona-detail');
+
+      /**
+       * Hides all persona detail cards.
+       */
+      function hideAllPersonas() {
+        allDetailCards.forEach(card => {
+          card.classList.add('is-hidden');
+        });
+      }
+
+      /**
+       * Switches view to the list (table).
+       */
+      function showListView() {
+        detailView.classList.add('is-hidden');
+        listView.classList.remove('is-hidden');
+        hideAllPersonas();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /**
+       * Switches view to the details for a specific persona.
+       * @param {string} personaId - The ID of the persona card to show (e.g., 'persona1').
+       */
+      function showDetailView(personaId) {
+        hideAllPersonas();
+        const card = document.getElementById(personaId);
+
+        if (card) {
+          card.classList.remove('is-hidden');
+          listView.classList.add('is-hidden');
+          detailView.classList.remove('is-hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      // --- Event Listeners ---
+
+      // 1. Table Row Click Handler (for mouse/pointer) and Keyboard Handler (for Enter/Space)
+      personaRows.forEach(row => {
+        const personaId = row.getAttribute('data-persona');
+
+        // Handle click event (mouse/pointer)
+        row.addEventListener('click', () => {
+          showDetailView(personaId);
+        });
+
+        // Handle keydown event (keyboard accessibility for Enter/Space)
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault(); // Prevent default scroll for space bar
+            showDetailView(personaId);
+          }
+        });
+      });
+
+      // 2. Back button handler (Click/Keyboard)
+      backBtn.addEventListener('click', showListView);
+
+      backBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showListView();
+        }
+      });
+
+      // --- Initialization ---
+
+      // Set initial state: hide the detail view and all detail cards
+      showListView();
+    });
+  </script>
+</body>
+</html>
